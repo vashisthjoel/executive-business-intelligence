@@ -1,0 +1,116 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.13.0/schema.json",
+  "name": "Chart_ForecastProfitSeries",
+  "position": {
+    "x": 20,
+    "y": 470,
+    "z": 6000,
+    "height": 230,
+    "width": 640
+  },
+  "visual": {
+    "visualType": "lineChart",
+    "query": {
+      "queryState": {
+        "Category": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "MonthlyForecast"
+                    }
+                  },
+                  "Property": "YearMonth"
+                }
+              },
+              "queryRef": "MonthlyForecast.YearMonth",
+              "nativeQueryRef": "YearMonth",
+              "active": true
+            }
+          ]
+        },
+        "Y": {
+          "projections": [
+            {
+              "field": {
+                "Aggregation": {
+                  "Expression": {
+                    "Column": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "MonthlyForecast"
+                        }
+                      },
+                      "Property": "Profit"
+                    }
+                  },
+                  "Function": 0
+                }
+              },
+              "queryRef": "MonthlyForecast.Profit",
+              "nativeQueryRef": "Profit"
+            },
+            {
+              "field": {
+                "Aggregation": {
+                  "Expression": {
+                    "Column": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "MonthlyForecast"
+                        }
+                      },
+                      "Property": "Profit_Lower_95"
+                    }
+                  },
+                  "Function": 0
+                }
+              },
+              "queryRef": "MonthlyForecast.Profit_Lower_95",
+              "nativeQueryRef": "Profit_Lower_95"
+            },
+            {
+              "field": {
+                "Aggregation": {
+                  "Expression": {
+                    "Column": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "MonthlyForecast"
+                        }
+                      },
+                      "Property": "Profit_Upper_95"
+                    }
+                  },
+                  "Function": 0
+                }
+              },
+              "queryRef": "MonthlyForecast.Profit_Upper_95",
+              "nativeQueryRef": "Profit_Upper_95"
+            }
+          ]
+        }
+      },
+      "sortDefinition": {
+        "sort": [
+          {
+            "field": {
+              "Column": {
+                "Expression": {
+                  "SourceRef": {
+                    "Entity": "MonthlyForecast"
+                  }
+                },
+                "Property": "YearMonth"
+              }
+            },
+            "direction": "Ascending"
+          }
+        ]
+      }
+    },
+    "drillFilterOtherVisuals": true
+  }
+}

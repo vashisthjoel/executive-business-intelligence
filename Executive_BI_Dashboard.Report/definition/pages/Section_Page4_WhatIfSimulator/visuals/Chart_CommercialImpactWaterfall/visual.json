@@ -1,0 +1,37 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.13.0/schema.json",
+  "name": "Chart_CommercialImpactWaterfall",
+  "position": {
+    "x": 640,
+    "y": 195,
+    "z": 7000,
+    "height": 260,
+    "width": 620
+  },
+  "visual": {
+    "visualType": "waterfallChart",
+    "query": {
+      "queryState": {
+        "Y": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "_Measures"
+                    }
+                  },
+                  "Property": "Profit Variance"
+                }
+              },
+              "queryRef": "_Measures.Profit Variance",
+              "nativeQueryRef": "Profit Variance"
+            }
+          ]
+        }
+      }
+    },
+    "drillFilterOtherVisuals": true
+  }
+}

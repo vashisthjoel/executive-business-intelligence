@@ -1,0 +1,200 @@
+table _Measures
+	lineageTag: a03e21b0-aa00-4caa-b7d0-4fd4833985eb
+
+	measure 'Total Revenue' = SUM(FactSales[Revenue])
+		formatString: "Rp"#,##0
+		lineageTag: c319d501-90ea-4821-8cb1-0d8f187c3b22
+
+	measure 'Total Profit' = SUM(FactSales[Profit])
+		formatString: "Rp"#,##0
+		lineageTag: 6fe4cd7e-8eea-4d8f-b65d-eb5d4ceb8816
+
+	measure 'Total COGS' = SUM(FactSales[COGS])
+		formatString: "Rp"#,##0
+		lineageTag: cf645dd2-3b96-4a41-ae0d-8a03f640682e
+
+	measure 'Profit Margin %' = DIVIDE([Total Profit], [Total Revenue], 0)
+		formatString: 0.00%
+		lineageTag: 1cfedc96-e7a0-4f68-9550-0997024c11ec
+
+	measure 'Total Orders' = DISTINCTCOUNT(FactSales[OrderID])
+		formatString: #,##0
+		lineageTag: c626d0ad-ef86-479e-ad0a-f4950a99e5a7
+
+	measure 'Units Sold' = SUM(FactSales[Quantity])
+		formatString: #,##0
+		lineageTag: 1537cf70-0faf-4079-8fdf-8fc432c66367
+
+	measure 'Average Order Value' = DIVIDE([Total Revenue], [Total Orders], 0)
+		formatString: "Rp"#,##0
+		lineageTag: 6630d432-bfaf-4591-aaf3-42b99a2d75dc
+
+	measure 'Unique Customers' = DISTINCTCOUNT(FactSales[CustomerKey])
+		formatString: #,##0
+		lineageTag: 3747bad3-c1fc-4383-aa3c-6caab837d236
+
+	measure 'Customer Count' = [Unique Customers]
+		formatString: #,##0
+		lineageTag: abd73269-b6aa-4d52-b86c-296876e52f75
+
+	measure 'Revenue per Customer' = DIVIDE([Total Revenue], [Unique Customers], 0)
+		formatString: "Rp"#,##0
+		lineageTag: a0882431-9760-4e12-90e0-5ae6a420586d
+
+	measure 'Average Customer Revenue' = [Revenue per Customer]
+		formatString: "Rp"#,##0
+		lineageTag: 2c03fdfb-67fb-4fc9-832a-f36606930a83
+
+	measure 'Average Orders per Customer' = DIVIDE([Total Orders], [Unique Customers], 0)
+		formatString: #,##0.00
+		lineageTag: dcd12cba-bc9a-4e07-807c-166239ac26bb
+
+	measure 'Repeat Customers' = CALCULATE(DISTINCTCOUNT(FactSales[CustomerKey]), FILTER(VALUES(FactSales[CustomerKey]), CALCULATE(DISTINCTCOUNT(FactSales[OrderID])) > 1))
+		formatString: #,##0
+		lineageTag: a793877c-f878-471d-b1c8-0a5c77073f9b
+
+	measure 'Repeat Customer Rate' = DIVIDE([Repeat Customers], [Unique Customers], 0)
+		formatString: 0.00%
+		lineageTag: 1005c5f1-d61f-4109-ac41-db6dd4a876f9
+
+	measure 'Revenue Previous Month' = CALCULATE([Total Revenue], DATEADD(DimDate[Date], -1, MONTH))
+		formatString: "Rp"#,##0
+		lineageTag: c230a18c-a46b-44f8-a605-f754c9c01507
+
+	measure 'MoM Revenue Growth %' = DIVIDE([Total Revenue] - [Revenue Previous Month], [Revenue Previous Month], 0)
+		formatString: 0.00%
+		lineageTag: 7fa9db44-248c-44b5-bea2-ad6190b7a62f
+
+	measure 'Revenue Previous Year' = CALCULATE([Total Revenue], DATEADD(DimDate[Date], -1, YEAR))
+		formatString: "Rp"#,##0
+		lineageTag: 702720f0-4e75-42d2-9078-fa0fc979cbd0
+
+	measure 'YoY Revenue Growth %' = DIVIDE([Total Revenue] - [Revenue Previous Year], [Revenue Previous Year], 0)
+		formatString: 0.00%
+		lineageTag: 256aea24-c549-4924-aa98-945dbee91673
+
+	measure 'Running Revenue' = CALCULATE([Total Revenue], FILTER(ALLSELECTED(DimDate[Date]), DimDate[Date] <= MAX(DimDate[Date])))
+		formatString: "Rp"#,##0
+		lineageTag: cdb1e2ba-77ad-4124-84c3-481064845886
+
+	measure 'Running Total' = [Running Revenue]
+		formatString: "Rp"#,##0
+		lineageTag: 6c2ab985-4f8e-4c54-8e3d-1b845561f471
+
+	measure 'Category Revenue Share %' = DIVIDE([Total Revenue], CALCULATE([Total Revenue], ALL(DimProduct[Category])), 0)
+		formatString: 0.00%
+		lineageTag: 9c52c2e9-0b2a-4dfa-9202-b65c681d206e
+
+	measure 'Customer Rank by Revenue' = RANKX(ALL(DimCustomer[CustomerID]), [Total Revenue], , DESC)
+		formatString: #,##0
+		lineageTag: f4f99cd0-ba69-4eff-a47d-59ffb9427a08
+
+	measure 'Product Rank by Revenue' = RANKX(ALL(DimProduct[Product]), [Total Revenue], , DESC)
+		formatString: #,##0
+		lineageTag: 29eeebd6-931b-41cc-91b4-1b088b51b769
+
+	measure 'Discount Parameter Value' = SELECTEDVALUE('Discount Parameter'[Discount Parameter], 0)
+		formatString: 0.00%
+		lineageTag: f306acf4-f7cb-440f-ac81-ccebad3ea5b7
+
+	measure 'Selected Discount Adjustment %' = VAR RawVal = [Discount Parameter Value] RETURN IF(ABS(RawVal) > 1, RawVal / 100, RawVal)
+		formatString: 0.00%
+		lineageTag: d3c1e988-20d5-4b47-8694-93b4cfa11627
+
+	measure 'Simulated Revenue' = VAR DiscAdj = [Selected Discount Adjustment %] RETURN SUMX(FactSales, FactSales[Quantity] * FactSales[UnitPrice] * (1 - MAX(0, MIN(1.0, FactSales[DiscountPct] + DiscAdj))))
+		formatString: "Rp"#,##0
+		lineageTag: 1c0803ed-49e3-4cce-87ac-2faa38d5a4eb
+
+	measure 'Simulated COGS' = SUM(FactSales[COGS])
+		formatString: "Rp"#,##0
+		lineageTag: d3303a88-737f-4527-864f-f188451e4fe1
+
+	measure 'Simulated Profit' = [Simulated Revenue] - [Simulated COGS]
+		formatString: "Rp"#,##0
+		lineageTag: ea9cf186-3fc9-40c1-816c-496245d8b060
+
+	measure 'Simulated Profit Margin %' = DIVIDE([Simulated Profit], [Simulated Revenue], 0)
+		formatString: 0.00%
+		lineageTag: 28f68da3-09da-44ef-b263-31b01e9d50f9
+
+	measure 'Revenue Variance' = [Simulated Revenue] - [Total Revenue]
+		formatString: "Rp"#,##0
+		lineageTag: 18f57c33-3fb8-4568-8a7d-5bd9eccff252
+
+	measure 'Revenue Variance %' = DIVIDE([Revenue Variance], [Total Revenue], 0)
+		formatString: 0.00%
+		lineageTag: e62306aa-a1dd-4ed1-a423-b4ea84352eae
+
+	measure 'Profit Variance' = [Simulated Profit] - [Total Profit]
+		formatString: "Rp"#,##0
+		lineageTag: e56f8831-d08e-4ea6-9bc6-3cc5ba568530
+
+	measure 'Profit Variance %' = DIVIDE([Profit Variance], [Total Profit], 0)
+		formatString: 0.00%
+		lineageTag: 40dc8ba3-b6e0-4ce9-8d05-7cd79f39c3c4
+
+	measure 'Margin Impact pts' = [Simulated Profit Margin %] - [Profit Margin %]
+		formatString: +0.00% pts;-0.00% pts;0.00% pts
+		lineageTag: e3053c7c-5570-44e8-835f-64c7cae01b10
+
+	measure 'Segment Customers' = DISTINCTCOUNT(CustomerRFM[CustomerKey])
+		formatString: #,##0
+		lineageTag: d4ea6240-ae90-46f8-b104-5bfc45e66be1
+
+	measure 'Segment Revenue' = SUM(CustomerRFM[Monetary_Revenue])
+		formatString: "Rp"#,##0
+		lineageTag: 8aeb3213-e645-45aa-a9ba-d703969bae26
+
+	measure 'Segment Profit' = SUM(CustomerRFM[Total_Profit])
+		formatString: "Rp"#,##0
+		lineageTag: b77ffdf1-f557-4705-bba8-4288be4c5c0b
+
+	measure 'Segment Revenue Share %' = DIVIDE([Segment Revenue], CALCULATE([Segment Revenue], ALL(CustomerRFM)), 0)
+		formatString: 0.00%
+		lineageTag: 2fbdb272-6bbf-40b0-9d24-3b4d140f9ecb
+
+	measure 'Segment Profit Margin %' = DIVIDE([Segment Profit], [Segment Revenue], 0)
+		formatString: 0.00%
+		lineageTag: 66afbd20-ca1f-4ef6-b6e2-acb7b57441d5
+
+	measure 'Revenue (RFM Cross-Filtered)' = CALCULATE([Total Revenue], TREATAS(VALUES(CustomerRFM[CustomerKey]), FactSales[CustomerKey]))
+		formatString: "Rp"#,##0
+		lineageTag: c90b2fe9-1828-484d-8e58-b044c6272a8e
+
+	measure 'Profit (RFM Cross-Filtered)' = CALCULATE([Total Profit], TREATAS(VALUES(CustomerRFM[CustomerKey]), FactSales[CustomerKey]))
+		formatString: "Rp"#,##0
+		lineageTag: f16d8816-3194-4101-8ebe-9c80851517dc
+
+	measure 'Orders (RFM Cross-Filtered)' = CALCULATE([Total Orders], TREATAS(VALUES(CustomerRFM[CustomerKey]), FactSales[CustomerKey]))
+		formatString: #,##0
+		lineageTag: f0c08e45-4550-491f-8707-8fa06cc28a5a
+
+	measure 'Forecast Revenue Total' = CALCULATE(SUM(MonthlyForecast[Revenue]), MonthlyForecast[Period_Type] = "Forecast")
+		formatString: "Rp"#,##0
+		lineageTag: 766abb54-66b7-4b80-9a40-a10a560c1989
+
+	measure 'Forecast Profit Total' = CALCULATE(SUM(MonthlyForecast[Profit]), MonthlyForecast[Period_Type] = "Forecast")
+		formatString: "Rp"#,##0
+		lineageTag: 09e776d8-be2c-4ebc-9f44-5078bc60397d
+
+	measure 'Forecast Margin %' = DIVIDE([Forecast Profit Total], [Forecast Revenue Total], 0)
+		formatString: 0.00%
+		lineageTag: b404bdc1-6825-4f54-a7e4-c21cbf667037
+
+	measure 'Segment Avg Recency Days' = AVERAGE(CustomerRFM[Recency_Days])
+		formatString: #,##0.0
+		lineageTag: 8223a6a6-9db7-4e38-b178-142a2daed039
+
+	column ID
+		dataType: int64
+		formatString: 0
+		lineageTag: 3121c6c1-7503-42fc-a8bd-a80d597f0556
+		summarizeBy: count
+		sourceColumn: ID
+
+		annotation SummarizationSetBy = Automatic
+
+	partition _Measures-Partition = m
+		mode: import
+		source = let Source = Table.FromRows(Json.Document(Binary.Decompress(Binary.FromText("i44FAA==", BinaryEncoding.Base64), Compression.Deflate)), let _t = ((type nullable text) meta [Serialized.Text = true]) in type table [ID = _t]), ChangeType = Table.TransformColumnTypes(Source,{{"ID", Int64.Type}}) in ChangeType
+

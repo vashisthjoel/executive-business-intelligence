@@ -1,0 +1,93 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.13.0/schema.json",
+  "name": "Table_AtRiskPriority",
+  "position": {
+    "x": 20,
+    "y": 450,
+    "z": 7000,
+    "height": 250,
+    "width": 640
+  },
+  "visual": {
+    "visualType": "tableEx",
+    "query": {
+      "queryState": {
+        "Values": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "CustomerRFM"
+                    }
+                  },
+                  "Property": "CustomerID"
+                }
+              },
+              "queryRef": "CustomerRFM.CustomerID",
+              "nativeQueryRef": "CustomerID"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "CustomerRFM"
+                    }
+                  },
+                  "Property": "RFM_Segment"
+                }
+              },
+              "queryRef": "CustomerRFM.RFM_Segment",
+              "nativeQueryRef": "RFM_Segment"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "CustomerRFM"
+                    }
+                  },
+                  "Property": "Recency_Days"
+                }
+              },
+              "queryRef": "CustomerRFM.Recency_Days",
+              "nativeQueryRef": "Recency_Days"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "CustomerRFM"
+                    }
+                  },
+                  "Property": "Monetary_Revenue"
+                }
+              },
+              "queryRef": "CustomerRFM.Monetary_Revenue",
+              "nativeQueryRef": "Monetary_Revenue"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "CustomerRFM"
+                    }
+                  },
+                  "Property": "Recommended_Action"
+                }
+              },
+              "queryRef": "CustomerRFM.Recommended_Action",
+              "nativeQueryRef": "Recommended_Action"
+            }
+          ]
+        }
+      }
+    },
+    "drillFilterOtherVisuals": true
+  }
+}

@@ -1,0 +1,125 @@
+table FactSales
+	lineageTag: 1ce945db-2864-4006-93c7-68e1f7f5e1f5
+
+	column OrderID
+		dataType: string
+		lineageTag: 0a6b9fd7-470f-44bb-861f-be7f1b94ff6f
+		summarizeBy: none
+		sourceColumn: OrderID
+
+		annotation SummarizationSetBy = Automatic
+
+	column DateKey
+		dataType: int64
+		formatString: 0
+		lineageTag: 185f2af3-adb4-4043-8a0a-22212ed5cf86
+		summarizeBy: none
+		sourceColumn: DateKey
+
+		annotation SummarizationSetBy = Automatic
+
+	column CustomerKey
+		dataType: int64
+		formatString: 0
+		lineageTag: e028fd99-9225-405b-92c4-96bf91015bfb
+		summarizeBy: none
+		sourceColumn: CustomerKey
+
+		annotation SummarizationSetBy = Automatic
+
+	column ProductKey
+		dataType: int64
+		formatString: 0
+		lineageTag: fd343983-1351-41ef-97b7-4c6e0e99f630
+		summarizeBy: none
+		sourceColumn: ProductKey
+
+		annotation SummarizationSetBy = Automatic
+
+	column PaymentMethod
+		dataType: string
+		lineageTag: d48fb05f-55f0-44ed-8b4c-64dca3a9ba6e
+		summarizeBy: none
+		sourceColumn: PaymentMethod
+
+		annotation SummarizationSetBy = Automatic
+
+	column Quantity
+		dataType: int64
+		formatString: 0
+		lineageTag: 9cd40338-0129-4acc-b49a-109bf5b56d7d
+		summarizeBy: sum
+		sourceColumn: Quantity
+
+		annotation SummarizationSetBy = Automatic
+
+	column UnitPrice
+		dataType: double
+		lineageTag: 81f451b4-689a-4907-85c2-b3bddf391f40
+		summarizeBy: sum
+		sourceColumn: UnitPrice
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column UnitCost
+		dataType: double
+		lineageTag: 59fd5fd9-0977-4fdc-8b10-6b3fc079788d
+		summarizeBy: sum
+		sourceColumn: UnitCost
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column DiscountPct
+		dataType: double
+		lineageTag: a2533820-21d1-4a84-b038-96bd8b856531
+		summarizeBy: sum
+		sourceColumn: DiscountPct
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column Revenue
+		dataType: double
+		lineageTag: c44fe1b6-43e2-4df8-be20-ec085fdfe184
+		summarizeBy: sum
+		sourceColumn: Revenue
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column COGS
+		dataType: double
+		lineageTag: 52059b8c-db2f-46ec-8e96-0c7dfef45b32
+		summarizeBy: sum
+		sourceColumn: COGS
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column Profit
+		dataType: double
+		lineageTag: 9dec4864-4914-43c0-8a98-fb8cf4aa6b59
+		summarizeBy: sum
+		sourceColumn: Profit
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	partition FactSales-Partition = m
+		mode: import
+		source =
+				let
+				    Source = Csv.Document(File.Contents("C:\Users\HP\OneDrive\Documents\Data-Analyst-Portfolio-main\Data-Analyst-Portfolio-main\05-executive-business-intelligence\\data\\fact_sales.csv"), [Delimiter=",", Columns=12, Encoding=65001, QuoteStyle=QuoteStyle.None]),
+				    PromoteHeaders = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),
+				    ChangeTypes = Table.TransformColumnTypes(PromoteHeaders, {{"OrderID", type text}, {"DateKey", Int64.Type}, {"CustomerKey", Int64.Type}, {"ProductKey", Int64.Type}, {"PaymentMethod", type text}, {"Quantity", Int64.Type}, {"UnitPrice", type number}, {"UnitCost", type number}, {"DiscountPct", type number}, {"Revenue", type number}, {"COGS", type number}, {"Profit", type number}})
+				in
+				    ChangeTypes
+

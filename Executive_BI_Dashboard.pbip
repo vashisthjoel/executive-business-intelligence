@@ -1,0 +1,11 @@
+{
+  "version": "1.0",
+  "artifacts": [
+    {
+      "report": {
+        "path": "Executive_BI_Dashboard.Report"
+      }
+    }
+  ],
+  "settings": {}
+}

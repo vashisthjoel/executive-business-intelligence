@@ -1,0 +1,13 @@
+table 'Discount Parameter'
+	lineageTag: e437ebb2-9fab-4bd1-824c-4c3c283af249
+
+	column 'Discount Parameter'
+		dataType: double
+		formatString: 0.00%
+		lineageTag: cce3ddfe-1b33-4ea1-b718-566aa13ba10f
+		sourceColumn: [Value]
+
+	partition 'Discount Parameter-Partition' = calculated
+		mode: import
+		source = GENERATESERIES(-0.10, 0.10, 0.01)
+

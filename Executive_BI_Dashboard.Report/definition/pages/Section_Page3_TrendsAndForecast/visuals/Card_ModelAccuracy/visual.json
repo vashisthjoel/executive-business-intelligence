@@ -1,0 +1,36 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.13.0/schema.json",
+  "name": "Card_ModelAccuracy",
+  "position": {
+    "x": 920,
+    "y": 75,
+    "z": 4000,
+    "height": 85,
+    "width": 340
+  },
+  "visual": {
+    "visualType": "textbox",
+    "objects": {
+      "general": [
+        {
+          "properties": {
+            "paragraphs": [
+              {
+                "textRuns": [
+                  {
+                    "value": "Model Accuracy (Validation):\nRevenue MAPE: 10.07% (Ridge)\nProfit MAPE:  11.01% (3M MA)",
+                    "textStyle": {
+                      "fontSize": "11pt",
+                      "color": "#059669",
+                      "fontWeight": "bold"
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      ]
+    }
+  }
+}

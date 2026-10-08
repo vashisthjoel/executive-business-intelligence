@@ -1,0 +1,27 @@
+relationship 9dfe5028-507d-4e2a-a6f8-aab8fa5309b2
+	joinOnDateBehavior: datePartOnly
+	fromColumn: DimDate.Date
+	toColumn: LocalDateTable_1b4a5b58-82e9-4c10-b5e7-439594762e0c.Date
+
+relationship AutoDetected_5840c120-2a34-4da4-9c9c-4588722cf4d8
+	fromColumn: FactSales.DateKey
+	toColumn: DimDate.DateKey
+
+relationship AutoDetected_e51e8bba-349f-4d4c-96ae-585d6072a6cd
+	fromColumn: DimDate.YearMonth
+	toColumn: MonthlyForecast.YearMonth
+
+relationship AutoDetected_af9d0fe3-97ee-43b7-bc11-2359d27ad33e
+	fromColumn: FactSales.CustomerKey
+	toColumn: DimCustomer.CustomerKey
+
+relationship AutoDetected_c04a75cf-1815-4071-99bf-6bceef47adb1
+	crossFilteringBehavior: bothDirections
+	fromCardinality: one
+	fromColumn: CustomerRFM.CustomerKey
+	toColumn: DimCustomer.CustomerKey
+
+relationship AutoDetected_034a5cba-2394-468f-8d40-0b9a5e7ed0f8
+	fromColumn: FactSales.ProductKey
+	toColumn: DimProduct.ProductKey
+

@@ -1,0 +1,38 @@
+table DimProduct
+	lineageTag: 913d91f9-7f83-4923-911a-4e509bf5fca4
+
+	column ProductKey
+		dataType: int64
+		formatString: 0
+		lineageTag: b2406f45-4231-46f5-ab6d-ef098a5ba159
+		summarizeBy: none
+		sourceColumn: ProductKey
+
+		annotation SummarizationSetBy = Automatic
+
+	column Product
+		dataType: string
+		lineageTag: 6db45851-15de-4ec5-a1e4-1701f3613abd
+		summarizeBy: none
+		sourceColumn: Product
+
+		annotation SummarizationSetBy = Automatic
+
+	column Category
+		dataType: string
+		lineageTag: 6198c376-88fe-4bf4-9d96-843344cf7f03
+		summarizeBy: none
+		sourceColumn: Category
+
+		annotation SummarizationSetBy = Automatic
+
+	partition DimProduct-Partition = m
+		mode: import
+		source =
+				let
+				    Source = Csv.Document(File.Contents("C:\Users\HP\OneDrive\Documents\Data-Analyst-Portfolio-main\Data-Analyst-Portfolio-main\05-executive-business-intelligence\\data\\dim_product.csv"), [Delimiter=",", Columns=3, Encoding=65001, QuoteStyle=QuoteStyle.None]),
+				    PromoteHeaders = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),
+				    ChangeTypes = Table.TransformColumnTypes(PromoteHeaders, {{"ProductKey", Int64.Type}, {"Product", type text}, {"Category", type text}})
+				in
+				    ChangeTypes
+

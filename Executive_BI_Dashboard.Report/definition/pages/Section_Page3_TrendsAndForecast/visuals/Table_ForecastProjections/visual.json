@@ -1,0 +1,107 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.13.0/schema.json",
+  "name": "Table_ForecastProjections",
+  "position": {
+    "x": 675,
+    "y": 470,
+    "z": 7000,
+    "height": 230,
+    "width": 585
+  },
+  "visual": {
+    "visualType": "tableEx",
+    "query": {
+      "queryState": {
+        "Values": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "MonthlyForecast"
+                    }
+                  },
+                  "Property": "YearMonth"
+                }
+              },
+              "queryRef": "MonthlyForecast.YearMonth",
+              "nativeQueryRef": "YearMonth"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "MonthlyForecast"
+                    }
+                  },
+                  "Property": "Period_Type"
+                }
+              },
+              "queryRef": "MonthlyForecast.Period_Type",
+              "nativeQueryRef": "Period_Type"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "MonthlyForecast"
+                    }
+                  },
+                  "Property": "Revenue"
+                }
+              },
+              "queryRef": "MonthlyForecast.Revenue",
+              "nativeQueryRef": "Revenue"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "MonthlyForecast"
+                    }
+                  },
+                  "Property": "Profit"
+                }
+              },
+              "queryRef": "MonthlyForecast.Profit",
+              "nativeQueryRef": "Profit"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "MonthlyForecast"
+                    }
+                  },
+                  "Property": "Profit_Margin_Pct"
+                }
+              },
+              "queryRef": "MonthlyForecast.Profit_Margin_Pct",
+              "nativeQueryRef": "Profit_Margin_Pct"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "MonthlyForecast"
+                    }
+                  },
+                  "Property": "MoM_Growth_Pct"
+                }
+              },
+              "queryRef": "MonthlyForecast.MoM_Growth_Pct",
+              "nativeQueryRef": "MoM_Growth_Pct"
+            }
+          ]
+        }
+      }
+    },
+    "drillFilterOtherVisuals": true
+  }
+}

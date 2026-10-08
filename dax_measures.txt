@@ -1,0 +1,281 @@
+-- ==============================================================================
+-- Portfolio #5 — Executive Business Intelligence Dashboard DAX Measures
+-- ==============================================================================
+
+-- ------------------------------------------------------------------------------
+-- 1. Core Financial & Operational Measures (Folder: 01. Financials)
+-- ------------------------------------------------------------------------------
+
+Total Revenue =
+SUM(FactSales[Revenue])
+
+Total Profit =
+SUM(FactSales[Profit])
+
+Total COGS =
+SUM(FactSales[COGS])
+
+Profit Margin % =
+DIVIDE([Total Profit], [Total Revenue], 0)
+
+Total Orders =
+DISTINCTCOUNT(FactSales[OrderID])
+
+Units Sold =
+SUM(FactSales[Quantity])
+
+Average Order Value =
+DIVIDE([Total Revenue], [Total Orders], 0)
+
+Unique Customers =
+DISTINCTCOUNT(FactSales[CustomerKey])
+
+Customer Count =
+[Unique Customers]
+
+Revenue per Customer =
+DIVIDE([Total Revenue], [Unique Customers], 0)
+
+Average Customer Revenue =
+[Revenue per Customer]
+
+Average Orders per Customer =
+DIVIDE([Total Orders], [Unique Customers], 0)
+
+Repeat Customers =
+CALCULATE(
+    DISTINCTCOUNT(FactSales[CustomerKey]),
+    FILTER(
+        VALUES(FactSales[CustomerKey]),
+        CALCULATE(DISTINCTCOUNT(FactSales[OrderID])) > 1
+    )
+)
+
+Repeat Customer Rate =
+DIVIDE([Repeat Customers], [Unique Customers], 0)
+
+-- ------------------------------------------------------------------------------
+-- 2. Time Intelligence & Growth Measures (Folder: 02. Time Intelligence)
+-- ------------------------------------------------------------------------------
+
+Revenue Previous Month =
+CALCULATE(
+    [Total Revenue],
+    DATEADD(DimDate[Date], -1, MONTH)
+)
+
+MoM Revenue Growth % =
+DIVIDE(
+    [Total Revenue] - [Revenue Previous Month],
+    [Revenue Previous Month],
+    0
+)
+
+Revenue Previous Year =
+CALCULATE(
+    [Total Revenue],
+    DATEADD(DimDate[Date], -1, YEAR)
+)
+
+YoY Revenue Growth % =
+DIVIDE(
+    [Total Revenue] - [Revenue Previous Year],
+    [Revenue Previous Year],
+    0
+)
+
+Running Revenue =
+CALCULATE(
+    [Total Revenue],
+    FILTER(
+        ALLSELECTED(DimDate[Date]),
+        DimDate[Date] <= MAX(DimDate[Date])
+    )
+)
+
+Running Total =
+[Running Revenue]
+
+-- ------------------------------------------------------------------------------
+-- 3. Contribution & Ranking Measures (Folder: 03. Rankings & Share)
+-- ------------------------------------------------------------------------------
+
+Category Revenue Share % =
+DIVIDE(
+    [Total Revenue],
+    CALCULATE([Total Revenue], ALL(DimProduct[Category])),
+    0
+)
+
+Customer Rank by Revenue =
+RANKX(
+    ALL(DimCustomer[CustomerID]),
+    [Total Revenue],
+    ,
+    DESC
+)
+
+Product Rank by Revenue =
+RANKX(
+    ALL(DimProduct[Product]),
+    [Total Revenue],
+    ,
+    DESC
+)
+
+-- ==============================================================================
+-- 4. What-If Discount & Price Simulator Measures (Folder: 04. What-If Simulator)
+-- ==============================================================================
+-- Parameter Table Creation Instructions:
+-- In Power BI: Modeling > New Parameter > Numeric range
+--   Name: 'Discount Parameter'
+--   Data type: Decimal number
+--   Minimum: -0.10 (-10%)
+--   Maximum: 0.10 (+10%)
+--   Increment: 0.01 (1%)
+--   Default: 0.00 (0%)
+--
+-- DAX calculated table alternative:
+-- 'Discount Parameter' = GENERATESERIES(-0.10, 0.10, 0.01)
+-- ------------------------------------------------------------------------------
+
+Discount Parameter Value =
+SELECTEDVALUE('Discount Parameter'[Discount Parameter], 0)
+
+Selected Discount Adjustment % =
+VAR RawVal = [Discount Parameter Value]
+RETURN
+    -- Normalizes either decimal (0.02) or integer percentage (2) to 0.02
+    IF(ABS(RawVal) > 1, RawVal / 100, RawVal)
+
+Simulated Revenue =
+VAR DiscAdj = [Selected Discount Adjustment %]
+RETURN
+SUMX(
+    FactSales,
+    FactSales[Quantity] * FactSales[UnitPrice] * (1 - MAX(0, MIN(1.0, FactSales[DiscountPct] + DiscAdj)))
+)
+
+Simulated COGS =
+SUM(FactSales[COGS])
+
+Simulated Profit =
+[Simulated Revenue] - [Simulated COGS]
+
+Simulated Profit Margin % =
+DIVIDE([Simulated Profit], [Simulated Revenue], 0)
+
+Revenue Variance =
+[Simulated Revenue] - [Total Revenue]
+
+Revenue Variance % =
+DIVIDE([Revenue Variance], [Total Revenue], 0)
+
+Profit Variance =
+[Simulated Profit] - [Total Profit]
+
+Profit Variance % =
+DIVIDE([Profit Variance], [Total Profit], 0)
+
+Margin Impact pts =
+[Simulated Profit Margin %] - [Profit Margin %]
+
+-- ------------------------------------------------------------------------------
+-- Dual-Factor Parameter: Price Adjustment
+-- Parameter Table: 'Price Parameter' = GENERATESERIES(-0.20, 0.20, 0.05)
+-- ------------------------------------------------------------------------------
+
+Price Parameter Value =
+SELECTEDVALUE('Price Parameter'[Price Parameter], 0)
+
+Selected Price Adjustment % =
+VAR RawPrice = [Price Parameter Value]
+RETURN
+    IF(ABS(RawPrice) > 1, RawPrice / 100, RawPrice)
+
+Simulated Revenue (Price & Discount) =
+VAR DiscAdj = [Selected Discount Adjustment %]
+VAR PriceAdj = [Selected Price Adjustment %]
+RETURN
+SUMX(
+    FactSales,
+    FactSales[Quantity] * (FactSales[UnitPrice] * (1 + PriceAdj)) * (1 - MAX(0, MIN(1.0, FactSales[DiscountPct] + DiscAdj)))
+)
+
+Simulated Profit (Price & Discount) =
+[Simulated Revenue (Price & Discount)] - [Simulated COGS]
+
+Simulated Margin % (Price & Discount) =
+DIVIDE([Simulated Profit (Price & Discount)], [Simulated Revenue (Price & Discount)], 0)
+
+-- ==============================================================================
+-- 5. RFM Customer Segmentation Measures (Folder: 05. RFM Segmentation)
+-- ==============================================================================
+
+Segment Customers =
+DISTINCTCOUNT(CustomerRFM[CustomerKey])
+
+Segment Revenue =
+SUM(CustomerRFM[Monetary_Revenue])
+
+Segment Profit =
+SUM(CustomerRFM[Total_Profit])
+
+Segment Revenue Share % =
+DIVIDE(
+    [Segment Revenue],
+    CALCULATE([Segment Revenue], ALL(CustomerRFM)),
+    0
+)
+
+Segment Profit Margin % =
+DIVIDE([Segment Profit], [Segment Revenue], 0)
+
+Segment Avg Recency Days =
+AVERAGE(CustomerRFM[Recency_Days])
+
+Segment Avg Frequency Orders =
+AVERAGE(CustomerRFM[Frequency_Orders])
+
+Segment Avg Monetary Spend =
+AVERAGE(CustomerRFM[Monetary_Revenue])
+
+-- Clean RFM Cross-Filtering (Avoids Ambiguous Bi-directional Relationships)
+-- Uses explicit TREATAS filter propagation to FactSales:
+
+Revenue (RFM Cross-Filtered) =
+CALCULATE(
+    [Total Revenue],
+    TREATAS(VALUES(CustomerRFM[CustomerKey]), FactSales[CustomerKey])
+)
+
+Profit (RFM Cross-Filtered) =
+CALCULATE(
+    [Total Profit],
+    TREATAS(VALUES(CustomerRFM[CustomerKey]), FactSales[CustomerKey])
+)
+
+Orders (RFM Cross-Filtered) =
+CALCULATE(
+    [Total Orders],
+    TREATAS(VALUES(CustomerRFM[CustomerKey]), FactSales[CustomerKey])
+)
+
+-- ==============================================================================
+-- 6. Predictive Forecasting Measures (Folder: 06. Forecasting)
+-- ==============================================================================
+
+Forecast Revenue Total =
+CALCULATE(
+    SUM(MonthlyForecast[Revenue]),
+    MonthlyForecast[Period_Type] = "Forecast"
+)
+
+Forecast Profit Total =
+CALCULATE(
+    SUM(MonthlyForecast[Profit]),
+    MonthlyForecast[Period_Type] = "Forecast"
+)
+
+Forecast Margin % =
+DIVIDE([Forecast Profit Total], [Forecast Revenue Total], 0)

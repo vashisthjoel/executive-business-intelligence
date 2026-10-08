@@ -1,0 +1,80 @@
+table DimDate
+	lineageTag: 6160cdec-ecd9-4554-b7e5-4ae265773950
+
+	column DateKey
+		dataType: int64
+		formatString: 0
+		lineageTag: c3630fc8-3aa5-4c84-92be-a15e3b6dd0bc
+		summarizeBy: none
+		sourceColumn: DateKey
+
+		annotation SummarizationSetBy = Automatic
+
+	column Date
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: d86e8af2-6f4e-4e1b-9091-bc8446e71637
+		summarizeBy: none
+		sourceColumn: Date
+
+		variation Variation
+			isDefault
+			relationship: 9dfe5028-507d-4e2a-a6f8-aab8fa5309b2
+			defaultHierarchy: LocalDateTable_1b4a5b58-82e9-4c10-b5e7-439594762e0c.'Date Hierarchy'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column Year
+		dataType: int64
+		formatString: 0
+		lineageTag: f71c2e94-f973-4586-8a24-e5b0d61c077c
+		summarizeBy: sum
+		sourceColumn: Year
+
+		annotation SummarizationSetBy = Automatic
+
+	column Quarter
+		dataType: string
+		lineageTag: 8da33914-4d9b-487e-8774-50e765df48bb
+		summarizeBy: none
+		sourceColumn: Quarter
+
+		annotation SummarizationSetBy = Automatic
+
+	column MonthNumber
+		dataType: int64
+		formatString: 0
+		lineageTag: f2353ddb-052c-445e-8378-127bfab76148
+		summarizeBy: sum
+		sourceColumn: MonthNumber
+
+		annotation SummarizationSetBy = Automatic
+
+	column MonthName
+		dataType: string
+		lineageTag: 50406543-cd0d-41cc-8998-3117cd6a1492
+		summarizeBy: none
+		sourceColumn: MonthName
+
+		annotation SummarizationSetBy = Automatic
+
+	column YearMonth
+		dataType: string
+		lineageTag: f836f484-c576-4915-abcd-97a87b6f187a
+		summarizeBy: none
+		sourceColumn: YearMonth
+
+		annotation SummarizationSetBy = Automatic
+
+	partition DimDate-Partition = m
+		mode: import
+		source =
+				let
+				    Source = Csv.Document(File.Contents("C:\Users\HP\OneDrive\Documents\Data-Analyst-Portfolio-main\Data-Analyst-Portfolio-main\05-executive-business-intelligence\\data\\dim_date.csv"), [Delimiter=",", Columns=7, Encoding=65001, QuoteStyle=QuoteStyle.None]),
+				    PromoteHeaders = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),
+				    ChangeTypes = Table.TransformColumnTypes(PromoteHeaders, {{"DateKey", Int64.Type}, {"Date", type date}, {"Year", Int64.Type}, {"Quarter", type text}, {"MonthNumber", Int64.Type}, {"MonthName", type text}, {"YearMonth", type text}})
+				in
+				    ChangeTypes
+

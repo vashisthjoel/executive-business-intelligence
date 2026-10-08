@@ -1,0 +1,30 @@
+# Power BI Project (PBIP) local and cache files
+**/.pbi/localSettings.json
+**/.pbi/cache.abf
+**/*.abf
+
+# Backup and temporary files
+*.bak
+**/*.bak
+**/*_backup/
+Page3_reverted_state_backup/
+*.tmp
+*.temp
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+.venv/
+
+# Operating System and IDE files
+.DS_Store
+Thumbs.db
+ehthumbs.db
+desktop.ini
+.vscode/
+.idea/

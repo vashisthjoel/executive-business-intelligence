@@ -1,0 +1,191 @@
+table CustomerRFM
+	lineageTag: 132b7947-a9f0-46fd-9376-62f7a6e1df6c
+
+	column CustomerKey
+		dataType: int64
+		formatString: 0
+		lineageTag: 5cf197b8-9afc-40e3-93dc-d935a2fc8916
+		summarizeBy: none
+		sourceColumn: CustomerKey
+
+		annotation SummarizationSetBy = Automatic
+
+	column CustomerID
+		dataType: string
+		lineageTag: 32445262-9984-47d9-8161-aa51216bd5a7
+		summarizeBy: none
+		sourceColumn: CustomerID
+
+		annotation SummarizationSetBy = Automatic
+
+	column City
+		dataType: string
+		lineageTag: bc0aa02c-8f28-45bf-848c-f62d2d3f5f71
+		summarizeBy: none
+		sourceColumn: City
+
+		annotation SummarizationSetBy = Automatic
+
+	column Original_Segment
+		dataType: string
+		lineageTag: efe28e24-c1a2-4a16-b135-5771feb0ce8e
+		summarizeBy: none
+		sourceColumn: Original_Segment
+
+		annotation SummarizationSetBy = Automatic
+
+	column FirstOrderDate
+		dataType: string
+		lineageTag: 20035932-add5-4983-aeb8-ad357e1d2a3b
+		summarizeBy: none
+		sourceColumn: FirstOrderDate
+
+		annotation SummarizationSetBy = Automatic
+
+	column LastOrderDate
+		dataType: string
+		lineageTag: 238d4589-5969-4a9b-a754-8e07de24b8b1
+		summarizeBy: none
+		sourceColumn: LastOrderDate
+
+		annotation SummarizationSetBy = Automatic
+
+	column Recency_Days
+		dataType: int64
+		formatString: 0
+		lineageTag: 2ccf6d46-c6a6-4228-ab87-7efad9941bae
+		summarizeBy: sum
+		sourceColumn: Recency_Days
+
+		annotation SummarizationSetBy = Automatic
+
+	column Frequency_Orders
+		dataType: int64
+		formatString: 0
+		lineageTag: ac7cd68e-7e65-4524-8028-cb6f890fdc42
+		summarizeBy: sum
+		sourceColumn: Frequency_Orders
+
+		annotation SummarizationSetBy = Automatic
+
+	column Monetary_Revenue
+		dataType: double
+		lineageTag: f6337294-e9bc-4cdf-a2b9-7d8f12b34a56
+		summarizeBy: sum
+		sourceColumn: Monetary_Revenue
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column Total_Profit
+		dataType: double
+		lineageTag: 9c517425-df32-4cdb-8907-68b4d6e8df93
+		summarizeBy: sum
+		sourceColumn: Total_Profit
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column Total_Units
+		dataType: int64
+		formatString: 0
+		lineageTag: 7468c15e-bfa1-488e-959d-d3e6cb1860d3
+		summarizeBy: sum
+		sourceColumn: Total_Units
+
+		annotation SummarizationSetBy = Automatic
+
+	column Avg_Order_Value
+		dataType: double
+		lineageTag: d67142d9-6ac4-48c2-8bf2-bc69a32483ee
+		summarizeBy: sum
+		sourceColumn: Avg_Order_Value
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column Profit_Margin_Pct
+		dataType: double
+		lineageTag: c62db5f8-1e79-4c3d-bd42-63a6d32ceb04
+		summarizeBy: sum
+		sourceColumn: Profit_Margin_Pct
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column R_Score
+		dataType: int64
+		formatString: 0
+		lineageTag: 6a40f39c-f1a8-427f-b655-108890a8452d
+		summarizeBy: sum
+		sourceColumn: R_Score
+
+		annotation SummarizationSetBy = Automatic
+
+	column F_Score
+		dataType: int64
+		formatString: 0
+		lineageTag: f6587676-f0c3-4de0-a080-25744b0bf463
+		summarizeBy: sum
+		sourceColumn: F_Score
+
+		annotation SummarizationSetBy = Automatic
+
+	column M_Score
+		dataType: int64
+		formatString: 0
+		lineageTag: 60dfeeb2-120a-4c9f-98c3-0e34392d2a95
+		summarizeBy: sum
+		sourceColumn: M_Score
+
+		annotation SummarizationSetBy = Automatic
+
+	column RFM_Score
+		dataType: int64
+		formatString: 0
+		lineageTag: 93504194-b126-45b6-917d-8202e5f94b95
+		summarizeBy: sum
+		sourceColumn: RFM_Score
+
+		annotation SummarizationSetBy = Automatic
+
+	column RFM_Index
+		dataType: double
+		lineageTag: 8071b26a-3687-4c04-bc89-d3060b92be8e
+		summarizeBy: sum
+		sourceColumn: RFM_Index
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column RFM_Segment
+		dataType: string
+		lineageTag: b0b4bb57-1a4d-417d-b528-6dfb90e1a1d3
+		summarizeBy: none
+		sourceColumn: RFM_Segment
+
+		annotation SummarizationSetBy = Automatic
+
+	column Recommended_Action
+		dataType: string
+		lineageTag: bec0326d-bfff-4e4d-a03a-5b084e61daee
+		summarizeBy: none
+		sourceColumn: Recommended_Action
+
+		annotation SummarizationSetBy = Automatic
+
+	partition CustomerRFM-Partition = m
+		mode: import
+		source =
+				let
+				    Source = Csv.Document(File.Contents("C:\Users\HP\OneDrive\Documents\Data-Analyst-Portfolio-main\Data-Analyst-Portfolio-main\05-executive-business-intelligence\\analytics\\outputs\\customer_rfm.csv"), [Delimiter=",", Columns=20, Encoding=65001, QuoteStyle=QuoteStyle.None]),
+				    PromoteHeaders = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),
+				    ChangeTypes = Table.TransformColumnTypes(PromoteHeaders, {{"CustomerKey", Int64.Type}, {"CustomerID", type text}, {"City", type text}, {"Original_Segment", type text}, {"FirstOrderDate", type text}, {"LastOrderDate", type text}, {"Recency_Days", Int64.Type}, {"Frequency_Orders", Int64.Type}, {"Monetary_Revenue", type number}, {"Total_Profit", type number}, {"Total_Units", Int64.Type}, {"Avg_Order_Value", type number}, {"Profit_Margin_Pct", type number}, {"R_Score", Int64.Type}, {"F_Score", Int64.Type}, {"M_Score", Int64.Type}, {"RFM_Score", Int64.Type}, {"RFM_Index", type number}, {"RFM_Segment", type text}, {"Recommended_Action", type text}})
+				in
+				    ChangeTypes
+
